@@ -19,13 +19,14 @@ whereIsLunch = (res) ->
     return 'thursday is fish day! umi sushi?'
   else
     lunchReplies = [
-      'it\'s a dos toros day (just like every day ಠ_ಠ)', 'how does llama zoo sound?', 
+      'it\'s a dos toros day. it\'s just so good ಥ‿ಥ', 'how does llama zoo sound?', 
       'hey why not bread and butter', 'fancy a walk? xians is good', 'i\'m in the mood for tinas', 
       'indian? how about haandi?', 'haven\'t had ramen in a while', 'pho?', 'num pang, mmmm',
       'no one does mediocre indian better than copper chimney', 'i\'m not inspired today. just do essen',
       'come get lunch with me (the human version)!', 'go to umi: but tell the hostess i said hello!',
       'this is an ali doro day', 'nothing wrong with a little CPK sometimes', 
-      'bagels and schmear is close and fast'
+      'bagels and schmear is close and fast', 'great sichuan: best chinese in the hood',
+      'channeling kartik: go to chipotle'
     ]
     return lunchReplies[Math.floor(Math.random() * lunchReplies.length)]
 
@@ -78,13 +79,14 @@ module.exports = (robot) ->
       if lastResponseAge == 0 || lastResponseAge > 1
         res.reply 'http://www.theonion.com/article/man-brings-lunch-from-home-to-cut-down-on-small-jo-37912'
 
-  robot.hear /(.*) train/i, (res) ->
+  robot.hear /.* train .*/i, (res) ->
     trainMinutes = 5
     if isLunchRoom res
       count = timekeeper.get LUNCH_TRAIN_COUNT_KEY
 
       if !count
-        res.send 'okay, we\'ve got a lunch train started. rolling out in ' + trainMinutes + ' min. who\'s in? say "i"'
+        timekeeper.delay 0.5, ->
+          res.send 'okay, we\'ve got a lunch train started. rolling out in ' + trainMinutes + ' min. who\'s in? say "i"'
 
         timekeeper.delay 60 * trainMinutes, ->
           people = timekeeper.get LUNCH_TRAIN_PEOPLE_KEY

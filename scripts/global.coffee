@@ -9,11 +9,16 @@ module.exports = (robot) ->
   timekeeper = new Timekeeper(robot)
 
   robot.enter (res) ->
+    un = res.message.user.name
     if res.message.room.name == 'general'
-      res.send 'hey ' + res.message.user.name + ', welcome to shapeways!'
+      res.send 'hey ' + un + ', welcome to shapeways!'
     else
-      replies = ['welcome ' + res.message.user.name + '!']
+      replies = ['welcome ' + un + '!']
       res.send res.random replies
+
+  robot.leave (res) ->
+    if Math.random() > 0.9
+      res.send 'later ' + res.message.user.name
 
   robot.hear /((.*) thanks$|^thanks (.*))/i, (res) ->
     welcomeReplies = ['(☞ ﾟヮﾟ)☞ hey anytime!', 'no problem (✌ ﾟ∀ﾟ)☞ i got your back', 'you got it dude :thumbsup:']
