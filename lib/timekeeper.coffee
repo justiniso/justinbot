@@ -32,9 +32,10 @@ class Timekeeper
         stored = @robot.brain.get key
 
         if stored && date < stored.expires  # not expired yet
-            count = stored.count + 1
+            count = parseInt(stored.value) + 1
         else
             count = 1
+
         @robot.brain.set key, {value: count, expires: dateAdd date, expiration}
 
     push: (key, item, expiration) ->

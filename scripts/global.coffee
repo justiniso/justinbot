@@ -26,6 +26,14 @@ module.exports = (robot) ->
     if Math.random() > 0.9
       res.send 'later ' + res.message.user.name
 
+  robot.hear /justin/i, (res) ->
+    key = 'hear.justin'
+    timekeeper.increment key, 10
+    
+    if parseInt(timekeeper.get key) >= 3
+      res.reply 'what?! what do you want? i\'m not smart and can\'t understand everything you say.'
+      timekeeper.increment key, 60 * 30  # 30 min
+
   robot.hear /((.*) thanks$|^thanks (.*))/i, (res) ->
     welcomeReplies = ['(☞ ﾟヮﾟ)☞ hey anytime!', 'no problem (✌ ﾟ∀ﾟ)☞ i got your back', 'you got it dude :thumbsup:']
     if res.match[1] == robot.name || res.match[2] == robot.name || res.match[3] == robot.name
