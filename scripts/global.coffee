@@ -10,8 +10,14 @@ module.exports = (robot) ->
 
   robot.enter (res) ->
     un = res.message.user.name
-    if res.message.room.name == 'general'
+    if res.message.room == 'general'
       res.send 'hey ' + un + ', welcome to shapeways!'
+    else if un == res.message.room.toLowerCase()  # private chat
+      res.send 'hey there, glad you popped in. type `help` to see a bit of what i can do'
+
+      userMessage = robot.brain.get "message:#{un}"
+      if userMessage
+        res.send 'also, you a message. type `read message` to see it'
     else
       replies = ['welcome ' + un + '!']
       res.send res.random replies

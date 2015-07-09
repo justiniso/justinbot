@@ -26,7 +26,7 @@ whereIsLunch = (res) ->
       'come get lunch with me (the human version)!', 'go to umi: but tell the hostess i said hello!',
       'this is an ali doro day', 'nothing wrong with a little CPK sometimes', 
       'bagels and schmear is close and fast', 'great sichuan: best chinese in the hood',
-      'channeling kartik: go to chipotle'
+      'channeling my inner kartik: go to chipotle'
     ]
     return lunchReplies[Math.floor(Math.random() * lunchReplies.length)]
 
@@ -49,7 +49,7 @@ module.exports = (robot) ->
       # Only respond every day or so
       lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'salad', new Date
       if lastResponseAge == 0 || lastResponseAge > 1
-        res.send 'really? salad? salad does not make a meal, it\'s a snack at best.'
+        res.send 'really? salad? salad is not a meal, it\'s a snack at best.'
 
   robot.hear /(.*)in the kitchen.*/i, (res) ->
     if isLunchRoom res
