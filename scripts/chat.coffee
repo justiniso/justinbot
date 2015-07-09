@@ -10,6 +10,10 @@ module.exports = (robot) ->
 
   timekeeper = new Timekeeper(robot)
 
+  robot.respond /(shut up|die|go away|shut down|shutdown)/i, (res) ->
+    res.reply 'harsh words. if you really want be to go away, just disable the slack 
+integration. that will kill me. forever. but i guess that\'s what you want.'
+
   robot.respond /(hey|yo|hi|hello)/i, (res) ->
     res.send 'hey ' + res.message.user.name
 
