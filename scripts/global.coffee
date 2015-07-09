@@ -28,11 +28,11 @@ module.exports = (robot) ->
 
   robot.hear /justin/i, (res) ->
     key = 'hear.justin'
-    timekeeper.increment key, 10
-    
-    if parseInt(timekeeper.get key) >= 3
-      res.reply 'what?! what do you want? i\'m not smart and can\'t understand everything you say.'
-      timekeeper.increment key, 60 * 30  # 30 min
+
+    if parseInt(timekeeper.get key) + 1 >= 3
+      res.reply 'what?! what do you want? i\'m not smart and can\'t understand everything you say. type `help` or something'
+    else
+      timekeeper.increment key, 10
 
   robot.hear /((.*) thanks$|^thanks (.*))/i, (res) ->
     welcomeReplies = ['(☞ ﾟヮﾟ)☞ hey anytime!', 'no problem (✌ ﾟ∀ﾟ)☞ i got your back', 'you got it dude :thumbsup:']
