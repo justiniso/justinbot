@@ -26,7 +26,8 @@ whereIsLunch = (res) ->
       'come get lunch with me (the human version)!', 'go to umi: but tell the hostess i said hello!',
       'this is an ali doro day', 'nothing wrong with a little CPK sometimes', 
       'bagels and schmear is close and fast', 'great sichuan: best chinese in the hood',
-      'channeling my inner kartik: go to chipotle'
+      'channeling my inner kartik: go to chipotle', 'spreads is great if you want overpriced mediocrity',
+      'it\'s a nice day, let\'s take a walk to that grilled cheese place'
     ]
     return lunchReplies[Math.floor(Math.random() * lunchReplies.length)]
 
@@ -38,66 +39,75 @@ module.exports = (robot) ->
   timekeeper = new Timekeeper(robot)
 
   # Tell the world how much I like sushi
-  robot.hear /(.*)sushi(.*)/i, (res) ->
-    # Only respond every day or so
-    lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'sushi', new Date
-    if lastResponseAge == 0 || lastResponseAge > 1
+  robot.hear /sushi/i, (res) ->
+    key = 'sushi'
+    if !timekeeper.get key
       res.send 'mmmm :sushi:'
+      timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
   robot.hear /salad/i, (res) ->
+    key = 'salad'
     if isLunchRoom res
-      # Only respond every day or so
-      lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'salad', new Date
-      if lastResponseAge == 0 || lastResponseAge > 1
+      if !timekeeper.get key
         res.send 'really? salad? salad is not a meal, it\'s a snack at best.'
+        timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
   robot.hear /(.*)in the kitchen.*/i, (res) ->
+    key = 'in.the.kitchen'
     if isLunchRoom res
-      # Only respond every day or so
-      lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'in.the.kitchen', new Date
-      if lastResponseAge == 0 || lastResponseAge > 1
+      if !timekeeper.get key
         res.reply 'nice!'
+        timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
   # Answer the question: where is lunch?
   robot.hear /(.*)(where|what)(.*)(lunch|is it|go)/i, (res) ->
+    key = 'when.is.lunch'
     if isLunchRoom res
-      # Provide lunch suggestions only once per day
-      lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'when.is.lunch', new Date
-      if lastResponseAge == 0 || lastResponseAge > 1
-        res.send whereIsLunch res
+
+      if !timekeeper.get key
+        timekeeper.delay 3, ->
+          res.send whereIsLunch res
+          timekeeper.set key, true, 60 * 30  # 30 minutes
 
   robot.hear /(.*)anyone (down|want|feeling|interested)/i, (res) ->
+    key = 'anyone.want'
     if isLunchRoom res
-      # Provide lunch suggestions only once per day
-      lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'anyone.want', new Date
-      if lastResponseAge == 0 || lastResponseAge > 1
-        res.send 'i wish i could go with you, but i\'m basically trapped in the office, just like when i worked here!'
+      if !timekeeper.get key
+        timekeeper.delay 3, ->
+          res.send 'i wish i could go with you, but i\'m basically trapped in the office, just like when i worked here!'
+          timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
   robot.hear /i brought/i, (res) ->
+    key = 'i.brought'
     if isLunchRoom res
-      lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'i.brought', new Date
-      if lastResponseAge == 0 || lastResponseAge > 1
+      if !timekeeper.get key
         res.reply 'http://www.theonion.com/article/man-brings-lunch-from-home-to-cut-down-on-small-jo-37912'
-
-  robot.hear /.* train .*/i, (res) ->
+        timekeeper.set key, true, 60 * 60 * 24  # 1 day
+  
+  robot.hear /food poisoning/i, (res) ->
+    if isLunchRoom res
+      if !timekeeper.get 'food.poisoning'
+        res.send 'food poisoning? you should check out my health rating SMS app!'
+        timekeeper.set 'food.poisoning', true, 60 * 60 * 24  # 1 day
+       
+  robot.hear /train/i, (res) ->
     trainMinutes = 5
     if isLunchRoom res
-      count = timekeeper.get LUNCH_TRAIN_COUNT_KEY
 
-      if !count
+      if !timekeeper.get LUNCH_TRAIN_COUNT_KEY
         timekeeper.delay 0.5, ->
           res.send 'okay, we\'ve got a lunch train started. rolling out in ' + trainMinutes + ' min. who\'s in? say "i"'
 
         timekeeper.delay 60 * trainMinutes, ->
           people = timekeeper.get LUNCH_TRAIN_PEOPLE_KEY
           if people
-            res.send 'time\'s up! lunch train rolling out. let\'s go ' + people + '!!'
+            res.send 'CHOOO CHOOO! time\'s up! lunch train rolling out. let\'s go ' + people + '!!'
           else
-            res.send 'time\'s up! lunch train rolling out. no takers i guess :('
+            res.send 'CHOOO CHOOO! time\'s up! lunch train rolling out. no takers i guess :('
 
-      timekeeper.increment LUNCH_TRAIN_COUNT_KEY, 60 * trainMinutes
+      timekeeper.set LUNCH_TRAIN_COUNT_KEY, true, 60 * trainMinutes
 
-  robot.hear /^(i|me|i am|i'm in|i'll go|i'll join)$/i, (res) ->
+  robot.hear /^(i|me|i am|i'm in|i'll go|i'll join)/i, (res) ->
     if isLunchRoom res
       if timekeeper.get LUNCH_TRAIN_COUNT_KEY
 

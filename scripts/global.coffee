@@ -36,8 +36,10 @@ module.exports = (robot) ->
 
   robot.hear /happy birthday/i, (res) ->
     lastResponseAge = timekeeper.getAge 'happy.birthday', new Date
-    if lastResponseAge == 0 || lastResponseAge > 10
-      res.send res.random ['happy birthday :birthday:', 'woo happy birthday! :party: :cake:', 'happy birthday!!']
+    if lastResponseAge == 0 || lastResponseAge > 1000
+      res.send res.random [
+        'happy birthday :birthday:', 'woo happy birthday! :party: :cake:', 'happy birthday!!',
+        'happy birthday to you!']
 
   robot.hear /(hi|hello|hey|yo) (.*)/i, (res) ->
     if res.match[2] == robot.name
@@ -45,7 +47,7 @@ module.exports = (robot) ->
   
   robot.hear /github\.com\/justiniso\/(.*)/i, (res) ->
     if res.match[1] == 'justinbot'
-      res.send 'UH OH! you found out my secret'
+      res.send 'OH CRAP! you found me. don\'t look inside, that\'s like looking at me naked!'
     else
       res.send 'hey that\'s a good one!'
 
@@ -63,14 +65,22 @@ module.exports = (robot) ->
       res.send 'ha, if i had a dollar for every time i heard that'
 
   robot.respond /[mb]ake .* (cake|something)/i, (res) ->
+    key = 'make.me.a.cake'
     responses = ['make your own damn cake', 'here ya go :cake:']
 
-    lastResponseAge = timekeeper.getAge 'make.me.a.cake', new Date
-    if lastResponseAge == 0 || lastResponseAge > 10
+    if !timekeeper.get key
       res.reply res.random responses
+      timekeeper.set key, true, 60 * 15  # 15 minutes
 
   robot.hear /more jquery/i, (res) ->
     res.reply 'http://i.stack.imgur.com/ssRUr.gif'
+
+  robot.hear /not feeling .*(well|good|great)/i, (res) ->
+    key = 'not.feeling.well'
+    if !timekeeper.get key
+      timekeeper.delay 1, ->
+        res.reply 'aww, sorry to hear that. feel better please!'
+        timekeeper.set key, true, 60 * 60 * 24  # 1 day
   
   robot.respond /meatball sub.*/, (res) ->
     res.send 'It doesn\'t make any sense. You have all of these starches that go 

@@ -57,6 +57,13 @@ class Timekeeper
         else 
             return null
 
+    set: (key, value, expiration) ->
+        date = new Date
+        @robot.brain.set key, {value: value, expires: dateAdd date, expiration}
+
+    expire: (key) ->
+        @robot.brain.remove key
+
     delay: (seconds, callback) ->
         setTimeout callback, seconds * 1000
 

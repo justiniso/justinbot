@@ -43,10 +43,10 @@ module.exports = (robot) ->
     message = robot.brain.get key
 
     if message
-      res.send "```#{message}```"
+      res.send "i was told to relay this message to you: ```#{message}```"
       robot.brain.remove key
     else
-      res.send 'no messages'
+      res.send 'no messages (http://www.sadtrombone.com/assets/sound/trombone.ogg)'
 
   robot.hear /send message to (.*): (.*)/i, (res) ->
     user = res.match[1]
@@ -87,17 +87,24 @@ integration. that will kill me. forever. but i guess that\'s what you want.'
     if isPrivateChat res  # This is a private chat
       res.send 'you want to chat?'
       res.send 'my responses are limited, but i\m a great listener :) (also my email is j@justiniso.com)'
+      res.send 'try typing `help` to see some of what i can do'
 
   robot.respond /help/i, (res) ->
+
+    unreadMessage = robot.brain.get "message:#{res.message.user.name}"
+    if unreadMessage
+      hasUnreadMessage = '(psss! you have 1 message!)'
+    else
+      hasUnreadMessage = '(you don\'t have any right now)'
+
     if isPrivateChat res
       res.send """i won\'t tell you everything, but here are some cool things i can do:
 
       - collecting people for lunch trains. type `train` in the lunch chat
-      - judge other people's food choices
       - response times -- `justin response time of <website>` (thanks ellington!)
       - send anonymous messages -- `send message to <user>: you have a drinking problem` (please use constructively)
       - send anonymous compliments -- `compliment <user>`
-      - read an unread message you have -- `read message`
+      - read an unread message you have -- `read message` #{hasUnreadMessage}
 
 the rest is left for you to discover!
       """
