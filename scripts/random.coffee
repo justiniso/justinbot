@@ -75,7 +75,7 @@ module.exports = (robot) ->
     key = 'throw.shade'
     if !timekeeper.get key
       timekeeper.set key, true, 60 * 60 * 24  # 1 day
-      res.reply 'oh you want some shade? well get ready gurl because I\'m about to throw so much shade, you\'ll need a flashlight'
+      res.reply 'oh you want shade? gurl, get ready. you\'re going to need a flashlight'
       
       timekeeper.delay 4, ->
         res.send res.random [
