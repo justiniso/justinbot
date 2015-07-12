@@ -105,6 +105,7 @@ integration. that will kill me. forever. but i guess that\'s what you want.'
       - send anonymous messages -- `send message to <user>: you have a drinking problem` (please use constructively)
       - send anonymous compliments -- `compliment <user>`
       - read an unread message you have -- `read message` #{hasUnreadMessage}
+      - throw shade
 
 the rest is left for you to discover!
       """

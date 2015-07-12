@@ -52,15 +52,18 @@ module.exports = (robot) ->
         res.send 'really? salad? salad is not a meal, it\'s a snack at best.'
         timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
-  robot.hear /(.*)in the kitchen.*/i, (res) ->
+  robot.hear /in the kitchen/i, (res) ->
     key = 'in.the.kitchen'
     if isLunchRoom res
       if !timekeeper.get key
         res.reply 'nice!'
         timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
+  robot.respond /(where|what|any)(.*)(lunch|is it|go)/i, (res) ->
+    res.send whereIsLunch res
+
   # Answer the question: where is lunch?
-  robot.hear /(.*)(where|what)(.*)(lunch|is it|go)/i, (res) ->
+  robot.hear /(.*)(where|what|any)(.*)(lunch|is it|go)/i, (res) ->
     key = 'when.is.lunch'
     if isLunchRoom res
 
@@ -87,7 +90,7 @@ module.exports = (robot) ->
   robot.hear /food poisoning/i, (res) ->
     if isLunchRoom res
       if !timekeeper.get 'food.poisoning'
-        res.send 'food poisoning? you should check out my health rating SMS app!'
+        res.send 'you should check out my app! https://github.com/justiniso/EatSafeNYC'
         timekeeper.set 'food.poisoning', true, 60 * 60 * 24  # 1 day
        
   robot.hear /train/i, (res) ->

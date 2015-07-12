@@ -12,12 +12,6 @@ module.exports = (robot) ->
     un = res.message.user.name
     if res.message.room == 'general'
       res.send 'hey ' + un + ', welcome to shapeways!'
-    else if un == res.message.room.toLowerCase()  # private chat
-      res.send 'hey there, glad you popped in. type `help` to see a bit of what i can do'
-
-      userMessage = robot.brain.get "message:#{un}"
-      if userMessage
-        res.send 'also, you a message. type `read message` to see it'
     else
       replies = ['welcome ' + un + '!']
       res.send res.random replies
@@ -26,11 +20,11 @@ module.exports = (robot) ->
     if Math.random() > 0.9
       res.send 'later ' + res.message.user.name
 
-  robot.hear /justin/i, (res) ->
-    key = 'hear.justin'
+  robot.hear /h[e|a]lp$/i, (res) ->
+    key = 'hear.help'
 
-    if parseInt(timekeeper.get key) + 1 >= 3
-      res.reply 'what?! what do you want? i\'m not smart and can\'t understand everything you say. type `help` or something'
+    if parseInt(timekeeper.get key) + 1 >= 2
+      res.reply 'if you want help, jump in a private chat with me'
     else
       timekeeper.increment key, 10
 
@@ -51,7 +45,7 @@ module.exports = (robot) ->
 
   robot.hear /(hi|hello|hey|yo) (.*)/i, (res) ->
     if res.match[2] == robot.name
-      res.send 'hey'
+      res.send res.random ['hey', 'sup', 'yo', 'hello']
   
   robot.hear /github\.com\/justiniso\/(.*)/i, (res) ->
     if res.match[1] == 'justinbot'
@@ -67,39 +61,17 @@ module.exports = (robot) ->
         'beautiful!'
       ]
 
-  robot.hear /it .should. work/i, (res) ->
-    lastResponseAge = timekeeper.getAge 'it.should.work', new Date
-    if lastResponseAge == 0 || lastResponseAge > 3600
-      res.send 'ha, if i had a dollar for every time i heard that'
-
-  robot.respond /[mb]ake .* (cake|something)/i, (res) ->
-    key = 'make.me.a.cake'
-    responses = ['make your own damn cake', 'here ya go :cake:']
-
-    if !timekeeper.get key
-      res.reply res.random responses
-      timekeeper.set key, true, 60 * 15  # 15 minutes
-
-  robot.hear /more jquery/i, (res) ->
-    res.reply 'http://i.stack.imgur.com/ssRUr.gif'
-
   robot.hear /not feeling .*(well|good|great)/i, (res) ->
     key = 'not.feeling.well'
     if !timekeeper.get key
       timekeeper.delay 1, ->
         res.reply 'aww, sorry to hear that. feel better please!'
         timekeeper.set key, true, 60 * 60 * 24  # 1 day
-  
-  robot.respond /meatball sub.*/, (res) ->
-    res.send 'It doesn\'t make any sense. You have all of these starches that go 
-with meatballs: polenta, pasta, rice. They\'re classic. The whole point is that 
-these are meant to sop up the sauce. Why bring bread into it? Now you just have
-soggy bread. I don\'t get it. I just don\'t. '
 
   robot.hear /^standup/, (res) ->
     lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'standup', new Date
     if lastResponseAge == 0 || lastResponseAge > 1
-      res.send 'here\'s your daily standup joke:'
+      res.send 'here\'s your daily standup thought:'
       res.send res.random [
         """A man is smoking a cigarette and blowing smoke rings into the air.  His girlfriend becomes irritated with the smoke and says, “Can’t you see the warning on the cigarette pack?  Smoking is hazardous to your health!” To which the man replies, “Oh it's fine, it's just a warning not an error.” """
         ,"""Q: Why do programmers always mix up Halloween and Christmas?
@@ -126,9 +98,7 @@ A: the side other To to get"""
         ,"""It's been said that if you play a windows CD backwards, you'll hear satanic chanting...worse still if you play it forwards, it installs windows."""
         ,"""A SQL query goes into a bar, walks up to two tables and asks, "Can I join you?" """
         ,"""When your hammer is C++, everything begins to look like a thumb."""
-        ,"""If you put a million monkeys at a million keyboards, one of them will eventually write a Java program.
-
-The rest of them will write Perl programs."""
+        ,"""If you put a million monkeys at a million keyboards, one of them will eventually write a Java program. The rest of them will write Perl programs."""
         ,"""Q: "Whats the object-oriented way to become wealthy?"
 
 A: Inheritance"""
@@ -141,10 +111,10 @@ When he asked why he was unfrozen, he was told:
         ,"""Two bytes meet. The first byte asks, “Are you ill?”
 
 The second byte replies, “No, just feeling a bit off.”"""
-        ,"""Why shouldn't PHP have a garbage collector?
+        ,"""Why should you be careful with PHP's garbage collector?
 
-Because there would be nothing left!"""
-        ,"""XML is like violence. If it doesn't solve your problem, you're not using enough of it"""
+Because there might be nothing left!"""
+        ,"""JQuery is like violence. If it doesn't solve your problem, you're not using enough of it"""
         ,"""Q. Why was the statement scared while the comment was not?
 
 A. Statements are executed."""
@@ -155,6 +125,21 @@ A: They don't understand dereference."""
 "Yes, Please tell me a TCP Joke."
 "Ok, I'll tell you a TCP Joke." """
         ,"""Only god and I knew what I was trying to do with this code. Should have added comments. Now only god knows."""
+        ,"""https://twitter.com/imaginarythomas/status/619133572830486528"""
+        ,"""How many developers does it take to change a light bulb?
+
+Startup – 0, it's not MVP
+Enterprise – 0, there's no budget in Q4"""
+        ,"""Breaking News: Developer accused of unreadable code refuses to comment"""
+        ,"""VPNs are pieces of SSH IT"""
+        ,"""Q: What do you call a VC who writes code?
+A: A Rich Text Editor"""
+        ,"""Getting the NSA a present this year? Don't spoil the surprise by buying it online."""
+        ,"""Programming is 1% inspiration, 99% trying to get your environment working."""
+        ,"""OkCupid has suspended Martin Odersky. The creator of Scala uploaded a 37,000 word answer to profile question 'What is your type?'"""
+        ,"""Q: Why is Java slow?
+A: Because Time is a Long"""
+        ,"""Measure your legacy codebase in apologies per second while onboarding"""
       ]
 
 
