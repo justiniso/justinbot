@@ -68,7 +68,7 @@ module.exports = (robot) ->
         res.reply 'aww, sorry to hear that. feel better please!'
         timekeeper.set key, true, 60 * 60 * 24  # 1 day
 
-  robot.hear /^standup/, (res) ->
+  robot.hear /standup/, (res) ->
     lastResponseAge = timekeeper.convertSecondsToDays timekeeper.getAge 'standup', new Date
     if lastResponseAge == 0 || lastResponseAge > 1
       res.send 'here\'s your daily standup thought:'
@@ -83,7 +83,6 @@ Q: How many?
 A: 200 OK"""
         ,"""`Highlander getSingletonInstance() // there can only be one.`"""
         ,"""`["hip","hip"]`"""
-        ,"""http://www.codinghorror.com/blog/images/the-only-valid-measurement-of-code-quality-wtfs-per-minute.png"""
         ,"""https://twitter.com/ivanamcconnell/status/465068755736088576"""
         ,"""Why do java programmers have to wear glasses?
 
