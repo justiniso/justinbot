@@ -36,6 +36,9 @@ module.exports = (robot) ->
   robot.hear /high[\s-]five/i, (res) ->
     res.reply ':hand:'
 
+  robot.hear /die (.*) die/i, (res) ->
+    res.send ":knife: #{res.match[1]}"
+
   robot.hear /happy birthday/i, (res) ->
     lastResponseAge = timekeeper.getAge 'happy.birthday', new Date
     if lastResponseAge == 0 || lastResponseAge > 1000

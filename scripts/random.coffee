@@ -71,6 +71,13 @@ module.exports = (robot) ->
         res.send 'how exciting! congratulations!!'
       timekeeper.set key, true, 60 * 60 * 24 * 10  # 10 days
 
+  robot.hear /in (\d+) min/i, (res) ->
+    minutes = res.match[1]
+
+    timekeeper.delay parseInt(minutes) * 60, ->
+      res.reply "it's been #{minutes} minutes: ```#{res.message.text}```"
+
+
   robot.respond /throw shade/i, (res) ->
     key = 'throw.shade'
     if !timekeeper.get key
