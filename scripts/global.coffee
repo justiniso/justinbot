@@ -1,7 +1,7 @@
 # Description:
 #   Global Scripts
 #
-
+request = require 'request'
 Timekeeper = require '../lib/timekeeper'
 
 module.exports = (robot) ->
@@ -20,6 +20,17 @@ module.exports = (robot) ->
     if Math.random() > 0.9
       res.send 'later ' + res.message.user.name
 
+  robot.hear /\w/i, (res) ->
+    if /dev/.test res.message.room || /off-topic/.test res.message.room
+      topStoryKey = 'yc.top.stories'
+      if !timekeeper.get topStoryKey
+        timekeeper.set topStoryKey, true, 60 * 60 * 24 * 2  # every 2 days
+        request 'https://hacker-news.firebaseio.com/v0/topstories.json', (error, response, body) ->
+          item = res.random JSON.parse(body)
+          request "https://hacker-news.firebaseio.com/v0/item/#{item}.json", (error, response, body) ->
+            timekeeper.delay 20, ->
+              res.send JSON.parse(body).url
+
   robot.hear /h[e|a]lp$/i, (res) ->
     key = 'hear.help'
 
@@ -27,6 +38,9 @@ module.exports = (robot) ->
       res.reply 'if you want help, jump in a private chat with me'
     else
       timekeeper.increment key, 10
+
+  robot.hear /hey guys/i, (res) ->
+    res.send 'hello'
 
   robot.hear /((.*) thanks$|^thanks (.*))/i, (res) ->
     welcomeReplies = ['(☞ ﾟヮﾟ)☞ hey anytime!', 'no problem (✌ ﾟ∀ﾟ)☞ i got your back', 'you got it dude :thumbsup:']
@@ -63,6 +77,13 @@ module.exports = (robot) ->
         'woohooo :party:', 'congratulations!', 'awesome work!', 'amazing!', 
         'beautiful!'
       ]
+
+  robot.hear /go(ing)* live/i, (res) ->
+    key = 'go.live'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1 # 1 day
+      timekeeper.delay 2, ->
+        res.send res.random ['yasss', 'DO IT DO IT DO IT!', '--> LIVE!', 'AWESOME!!']
 
   robot.hear /not feeling .*(well|good|great)/i, (res) ->
     key = 'not.feeling.well'

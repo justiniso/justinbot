@@ -21,6 +21,45 @@ module.exports = (robot) ->
       res.reply res.random responses
       timekeeper.set key, true, 60 * 15  # 15 minutes
 
+  robot.hear /(greatest|best) (.*) ever/i, (res) ->
+    key = 'greatest.ever'
+    thing = res.match[2]
+
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 15  # 15 minutes
+      timekeeper.delay 2, ->
+        res.send "the BEST #{thing}"
+
+  robot.hear /worst (.*) ever/i, (res) ->
+    key = 'worst.ever'
+    thing = res.match[1]
+
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 15  # 15 minutes
+      timekeeper.delay 2, ->
+        res.send "so bad, the WORST #{thing}"
+
+  robot.hear /gross/i, (res) ->
+    key = 'gross'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1 # 1 day
+      timekeeper.delay 1, ->
+        res.send 'you\'re gross'
+
+  robot.hear /\+1/i, (res) ->
+    key = 'plus.one'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1 # 1 day
+      timekeeper.delay 1, ->
+        res.send '+1'
+  
+  robot.hear /ninja/i, (res) ->
+    key = 'ninja'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1 # 1 day
+      timekeeper.delay 1, ->
+        res.send ':ninja:'
+
   robot.hear /^cheers/i, (res) ->
     key = 'cheers'
     if !timekeeper.get key
@@ -35,8 +74,20 @@ module.exports = (robot) ->
         res.send 'needs more face on that vase'
         timekeeper.set key, true, 60 * 60 * 24 * 10  # 10 days
 
+  robot.hear /hair\s*cut/i, (res) ->
+    key = 'haircut'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1  # 1 day
+      res.send ':haircut: snip snip'
+
   robot.hear /more jquery/i, (res) ->
     res.reply 'http://i.stack.imgur.com/ssRUr.gif'
+
+  robot.hear /the worst/i, (res) ->
+    key = 'the.worst'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 24 * 1  # 1 day
+      res.send 'so bad'    
 
   robot.hear /halloween costume/i, (res) ->
     key = 'halloween.costume'
@@ -77,9 +128,20 @@ module.exports = (robot) ->
     timekeeper.delay parseInt(minutes) * 60, ->
       res.reply "it's been #{minutes} minutes: ```#{res.message.text}```"
 
+  robot.hear /shapeways\.xxx/i, (res) ->
+    key = 'xxx'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 1  # 1 hours
+      res.send ':hear_no_evil:'
+
+  robot.hear /(write|unit) test/i, (res) ->
+    key = 'tests'
+    if !timekeeper.get key
+      timekeeper.set key, true, 60 * 60 * 1  # 1 hour
+      res.send res.random [':rock:', 'tests :rocket:', 'the more tests, the more good']
 
   robot.respond /throw shade/i, (res) ->
-    key = 'throw.shade'
+    key = "throw.shade:#{res.message.user.name}"
     if !timekeeper.get key
       timekeeper.set key, true, 60 * 60 * 24  # 1 day
       res.reply 'oh you want shade? gurl, get ready. you\'re going to need a flashlight'
@@ -95,14 +157,14 @@ module.exports = (robot) ->
         timekeeper.delay 3, ->
           res.send res.random [
             'well at least you have... a personality',
-            'well at least a _couple_ of people like you :lips:',
+            'well at least a _couple_ of people like you',
             'i don\'t start fights, but i\'ll finish this one',
           ]
 
           timekeeper.delay 3, ->
             res.send res.random [
               'and if you need a hand, the back of mine is available :wave:',
-              'girl you are so bereft of class, you could be a marxist utopia',
+              'you are so bereft of class, you could be a marxist utopia',
             ]
 
             timekeeper.delay 3, ->

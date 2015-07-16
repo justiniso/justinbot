@@ -104,6 +104,7 @@ integration. that will kill me. forever. but i guess that\'s what you want.'
       - response times -- `justin response time of <website>` (thanks ellington!)
       - send anonymous messages -- `send message to <user>: you have a drinking problem` (please use constructively)
       - send anonymous compliments -- `compliment <user>`
+      - send non-anonymous messages -- `leave message to <user>: i love you`
       - read an unread message you have -- `read message` #{hasUnreadMessage}
       - throw shade
 
@@ -113,7 +114,7 @@ the rest is left for you to discover!
       if /qualitybros/i.test(res.message.room.toLowerCase())
         res.send 'and just for you, qualitybros: a special little command: `justin say in <room>: <message>`. please troll wes with it ;)'
     else
-      res.reply 'oh come on, I\'m not going to make it that easy ;). feel free to hop in a private chat with me though (*hint hint)'
+      res.reply 'hop in a private chat with me. i\'ll tell you some of my secrets ;)' 
 
   robot.respond /why.* you leave/i, (res) ->
     if isPrivateChat res
